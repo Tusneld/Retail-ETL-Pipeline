@@ -4,6 +4,10 @@
 [![Pandas](https://img.shields.io/badge/Pandas-data%20processing-150458?logo=pandas&logoColor=white)](https://pandas.pydata.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-data%20warehouse-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 
+---
+![Retail Successful](https://github.com/Tusneld/Retail-ETL-Pipeline/blob/2f578e17a387f7a00241ee3c97d7cc547f84486d/ETL.JPG)
+---
+
 A production-style Extract, Transform, Load (ETL) pipeline built in Python. It processes raw retail CSV data and loads a structured PostgreSQL data warehouse using a star-schema-inspired model with fact and dimension tables.
 
 This project simulates a real-world retail data engineering workflow: sales transactions, store information, and external features are extracted, standardized, transformed into analytical tables, and loaded for reporting and analysis.
