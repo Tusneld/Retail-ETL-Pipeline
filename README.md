@@ -68,7 +68,7 @@ Retail-ETL-Pipeline/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/Retail-ETL-Pipeline.git
+git clone https://github.com/Tusneld/Retail-ETL-Pipeline.git
 cd Retail-ETL-Pipeline
 ```
 
