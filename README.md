@@ -1,8 +1,16 @@
 # Retail ETL Pipeline
 
-A Python-based Extract, Transform, Load (ETL) pipeline that processes retail sales data from CSV files and loads a dimensional warehouse model into PostgreSQL.
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Pandas](https://img.shields.io/badge/Pandas-data%20processing-150458?logo=pandas&logoColor=white)](https://pandas.pydata.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-data%20warehouse-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 
-The pipeline extracts features, sales, and store datasets; standardizes and transforms the data; then loads four tables into a PostgreSQL database.
+A production-style Extract, Transform, Load (ETL) pipeline built in Python. It processes raw retail CSV data and loads a structured PostgreSQL data warehouse using a star-schema-inspired model with fact and dimension tables.
+
+This project simulates a real-world retail data engineering workflow: sales transactions, store information, and external features are extracted, standardized, transformed into analytical tables, and loaded for reporting and analysis.
+
+## Project Overview
+
+The pipeline is organized into separate extraction, transformation, and loading modules. `main.py` orchestrates the complete workflow from raw files to PostgreSQL tables.
 
 ## Features
 
@@ -18,25 +26,52 @@ The pipeline extracts features, sales, and store datasets; standardizes and tran
 ## Architecture
 
 ```text
-CSV files
+Raw CSV files
    |
    v
-Extract -> Transform -> Load
-                          |
-                          v
-                 PostgreSQL warehouse
+extract.py  ->  Loads source files into pandas DataFrames
+   |
+   v
+transform.py  ->  Cleans data and builds fact and dimension tables
+   |
+   v
+load.py  ->  Writes transformed tables to PostgreSQL
+   |
+   v
+main.py  ->  Orchestrates the end-to-end pipeline
 ```
+
+## Data Sources
+
+| File | Description |
+| --- | --- |
+| `sales_dataset.csv` | Weekly sales transactions by store and department |
+| `stores_dataset.csv` | Store metadata, including store type and size |
+| `Features_dataset.csv` | External factors, including temperature, fuel price, CPI, unemployment, holidays, and markdown fields |
+
+## Tech Stack
+
+- **Python** - Core pipeline language
+- **Pandas** - CSV extraction, data cleaning, transformation, and table preparation
+- **PostgreSQL** - Relational data warehouse destination
+- **SQLAlchemy** - PostgreSQL engine and database integration
+- **psycopg2-binary** - PostgreSQL driver for Python
 
 ## Data Model
 
-The pipeline creates the following tables in the `public` PostgreSQL schema:
+The pipeline creates the following tables in the `public` PostgreSQL schema. Together they form a dimensional model for analytical queries.
+
+**Fact table**
+
+- `fact_sales` - Sales transactions by store, department, date, and holiday status
+
+**Dimension tables**
 
 | Table | Description |
 | --- | --- |
 | `dim_store` | Unique store records, including store type and size |
 | `dim_date` | Unique sales dates with holiday, year, month, and ISO week attributes |
-| `dim_feature` | Unique store and date feature records, excluding markdown columns |
-| `fact_sales` | Sales transactions with store, department, date, sales, and holiday data |
+| `dim_feature` | Unique feature records after markdown columns are removed |
 
 Each table is written with `if_exists='replace'`, so an existing table is replaced during every successful run.
 
@@ -153,6 +188,15 @@ python main.py
 
 A successful run prints the source dataset previews, followed by completion messages from the load process.
 
+## What This Pipeline Does
+
+- Extracts data from three retail CSV files.
+- Standardizes source date formats and column names.
+- Removes unused markdown columns from the feature data.
+- Builds a star-schema-inspired warehouse model.
+- Loads one fact table and three dimension tables into PostgreSQL.
+- Supports downstream sales reporting, trend analysis, and exploratory SQL queries.
+
 ## Verifying the Load
 
 Connect to PostgreSQL and list the tables:
@@ -204,6 +248,14 @@ SELECT 'fact_sales', COUNT(*) FROM public.fact_sales;
 
 `etl/load.py` creates a SQLAlchemy PostgreSQL engine and writes the four transformed DataFrames to the `public` schema.
 
+## Key Learnings
+
+- Designing dimensional models for analytical workloads
+- Separating extraction, transformation, and loading responsibilities
+- Preparing retail data with pandas
+- Loading DataFrames into PostgreSQL with SQLAlchemy
+- Managing database configuration without committing credentials
+
 ## Troubleshooting
 
 ### `psql` is not recognized
@@ -237,6 +289,12 @@ Refresh the database schema in pgAdmin and confirm that you are viewing the `ret
 - Add automated data-quality checks and tests
 - Add incremental loading instead of replacing complete tables
 - Add a dependency lock file such as `requirements.txt`
+
+## Author
+
+**Tusnepde Endjala**
+
+GitHub: [@Tusneld](https://github.com/Tusneld)
 
 ## License
 
